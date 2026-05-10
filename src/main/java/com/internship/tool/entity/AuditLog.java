@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +24,8 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "entity_type", nullable = false)
-    private String entityType;
+    @Column(name = "entity_name", nullable = false)
+    private String entityName;
 
     @Column(name = "entity_id", nullable = false)
     private Long entityId;
@@ -34,13 +33,18 @@ public class AuditLog {
     @Column(nullable = false)
     private String action;
 
-    @Lob
-    @Column(name = "old_value")
+    // FIX: use TEXT instead of LOB
+    @Column(name = "old_value", columnDefinition = "TEXT")
     private String oldValue;
 
-    @Lob
-    @Column(name = "new_value")
+    @Column(name = "new_value", columnDefinition = "TEXT")
     private String newValue;
+
+    @Column(name = "performed_by")
+    private String performedBy;
+
+    @Column(name = "timestamp", insertable = false, updatable = false)
+    private LocalDateTime timestamp;
 
     @CreationTimestamp
     @Column(name = "changed_at", updatable = false)

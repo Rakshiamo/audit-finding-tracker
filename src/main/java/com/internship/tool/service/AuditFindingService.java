@@ -28,7 +28,7 @@ public interface AuditFindingService {
 
     List<AuditFinding> getByStatus(String status);
 
-    Page<AuditFinding> searchFindings(String query, int page, int size);
+    Page<AuditFinding> searchFindings(String query, int page, int size, String sortBy, String sortDir);
 
     DashboardStatsDto getDashboardStats();
 }

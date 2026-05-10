@@ -1,56 +1,37 @@
 package com.internship.tool.controller;
-///Temp code only 
-import com.internship.tool.service.AuditService;
+
+import com.internship.tool.entity.AuditLog;
+import com.internship.tool.service.AuditLogService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/audit")
 @RequiredArgsConstructor
+@Tag(name = "Audit Controller", description = "Endpoints for viewing system change logs and history")
 public class AuditController {
 
-    private final AuditService auditService;
+    private final AuditLogService auditService;
 
-    //  UPDATE AUDIT FINDING
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateAudit(
-            @PathVariable Long id,
-            @RequestBody Object request) {
-
-        Object response = auditService.updateAudit(id, request);
-        return ResponseEntity.ok(response);
+    @Operation(summary = "Get all audit logs", description = "Retrieves a complete list of all changes made to system entities.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved logs")
+    @ApiResponse(responseCode = "401", description = "Unauthorized - JWT token missing or invalid")
+    @GetMapping
+    public ResponseEntity<List<AuditLog>> getAllLogs() {
+        return ResponseEntity.ok(auditService.findAll());
     }
 
-    //  SOFT DELETE (NOT HARD DELETE)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAudit(@PathVariable Long id) {
-
-        auditService.softDeleteAudit(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // SEARCH API
-    @GetMapping("/search")
-    public ResponseEntity<Page<Object>> searchAudit(
-            @RequestParam String q,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
-
-        Page<Object> results = auditService.searchAudit(q, page, size, sortBy, sortDir);
-        return ResponseEntity.ok(results);
-    }
-
-    //  DASHBOARD STATS API
-    @GetMapping("/stats")
-    public ResponseEntity<Map<String, Object>> getStats() {
-
-        Map<String, Object> stats = auditService.getStats();
-        return ResponseEntity.ok(stats);
+    @Operation(summary = "Get logs by entity", description = "Fetches history for a specific entity type (e.g., 'FINDING').")
+    @ApiResponse(responseCode = "200", description = "Logs found")
+    @ApiResponse(responseCode = "404", description = "No logs found for this entity")
+    @GetMapping("/{entityType}")
+    public ResponseEntity<List<AuditLog>> getByEntity(@PathVariable String entityType) {
+        return ResponseEntity.ok(auditService.findByEntityType(entityType));
     }
 }

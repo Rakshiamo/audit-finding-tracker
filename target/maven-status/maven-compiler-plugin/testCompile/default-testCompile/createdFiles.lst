@@ -1,0 +1,5 @@
+com\internship\tool\controller\AuthControllerTest.class
+com\internship\tool\controller\AuditFindingControllerTest.class
+com\internship\tool\controller\AuditFindingCrudTestcontainersIT.class
+com\internship\tool\controller\ApiIntegrationMockMvcTest.class
+com\internship\tool\integration\FullCrudFlowIntegrationTest.class

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -18,17 +20,36 @@ public class AuditService {
 
     private final AuditFindingRepository auditFindingRepository;
 
-    public Object updateAudit(Long id, Object request) {
-        return "Update API working for id: " + id;
+    public AuditFinding updateAudit(Long id, AuditFinding request) {
+        AuditFinding existing = auditFindingRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new RuntimeException("Finding not found"));
+
+        if (request.getTitle() != null) {
+            existing.setTitle(request.getTitle());
+        }
+        if (request.getDescription() != null) {
+            existing.setDescription(request.getDescription());
+        }
+        if (request.getSeverity() != null) {
+            existing.setSeverity(request.getSeverity());
+        }
+        if (request.getStatus() != null) {
+            existing.setStatus(request.getStatus());
+        }
+        if (request.getDueDate() != null) {
+            existing.setDueDate(request.getDueDate());
+        }
+        return auditFindingRepository.save(existing);
     }
 
     public void softDeleteAudit(Long id) {
-        if (auditFindingRepository.existsById(id)) {
-            auditFindingRepository.deleteById(id);
-        }
+        AuditFinding existing = auditFindingRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new RuntimeException("Finding not found"));
+        existing.setDeletedAt(LocalDateTime.now());
+        auditFindingRepository.save(existing);
     }
 
-    public Page<Object> searchAudit(String q, int page, int size, String sortBy, String sortDir) {
+    public Page<AuditFinding> searchAudit(String q, int page, int size, String sortBy, String sortDir) {
         Sort sort = Sort.by(sortBy);
         if ("desc".equalsIgnoreCase(sortDir)) {
             sort = sort.descending();
@@ -37,23 +58,16 @@ public class AuditService {
         }
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<AuditFinding> results = auditFindingRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrSeverityContainingIgnoreCaseOrStatusContainingIgnoreCase(
+        return auditFindingRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrSeverityContainingIgnoreCaseOrStatusContainingIgnoreCase(
                 q, pageable);
-
-        if (results.isEmpty() && q != null && !q.isBlank()) {
-            return new org.springframework.data.domain.PageImpl<>(
-                    java.util.List.of("Search result for: " + q), pageable, 1);
-        }
-
-        return results.map(this::toSummary);
     }
 
     public Map<String, Object> getStats() {
-        long total = auditFindingRepository.count();
+        long total = auditFindingRepository.countTotalFindings();
         long open = auditFindingRepository.countByStatusIgnoreCase("OPEN");
         long closed = auditFindingRepository.countByStatusIgnoreCase("CLOSED");
         long overdue = auditFindingRepository.countByDueDateBeforeAndStatusIgnoreCaseNot(
-                java.time.LocalDate.now(), "CLOSED");
+                LocalDate.now(), "CLOSED");
 
         Map<String, Object> stats = new HashMap<>();
         stats.put("total", total);
@@ -63,7 +77,4 @@ public class AuditService {
         return stats;
     }
 
-    private String toSummary(AuditFinding finding) {
-        return String.format("%d:%s:%s:%s", finding.getId(), finding.getTitle(), finding.getStatus(), finding.getDueDate());
-    }
 }

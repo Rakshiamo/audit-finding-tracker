@@ -133,8 +133,14 @@ public class AuditFindingServiceImpl implements AuditFindingService {
     }
 
     @Override
-    public Page<AuditFinding> searchFindings(String query, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<AuditFinding> searchFindings(String query, int page, int size, String sortBy, String sortDir) {
+        Sort sort = Sort.by(sortBy);
+        if ("desc".equalsIgnoreCase(sortDir)) {
+            sort = sort.descending();
+        } else {
+            sort = sort.ascending();
+        }
+        Pageable pageable = PageRequest.of(page, size, sort);
         return repository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCaseOrSeverityContainingIgnoreCaseOrStatusContainingIgnoreCase(
                 query, pageable);
     }

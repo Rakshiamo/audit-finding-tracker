@@ -1,3 +1,4 @@
+com\internship\tool\service\AuditLogService.class
 com\internship\tool\controller\AuditController.class
 com\internship\tool\entity\AuditFinding$AuditFindingBuilder.class
 com\internship\tool\config\SecurityConfig.class
@@ -14,6 +15,7 @@ com\internship\tool\service\impl\AuthServiceImpl.class
 com\internship\tool\entity\AuditFinding.class
 com\internship\tool\ToolApplication.class
 com\internship\tool\entity\User.class
+com\internship\tool\controller\GlobalExceptionHandler.class
 com\internship\tool\repository\AuditFindingRepository.class
 com\internship\tool\repository\AuditLogRepository.class
 com\internship\tool\entity\User$UserBuilder.class

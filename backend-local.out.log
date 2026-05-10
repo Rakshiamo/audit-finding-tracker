@@ -2707,3 +2707,22 @@ Hibernate: select af1_0.id,af1_0.created_at,af1_0.deleted_at,af1_0.description,a
 2026-05-10T21:41:15.836+05:30 DEBUG 14648 --- [tool] [io-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
 2026-05-10T21:41:15.841+05:30 DEBUG 14648 --- [tool] [io-8081-exec-10] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [AuditFinding(id=1, title=Expired TLS certificate on vendor portal, description=Certificate renewal p (truncated)...]
 2026-05-10T21:41:15.841+05:30 DEBUG 14648 --- [tool] [io-8081-exec-10] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2026-05-10T22:02:30.290+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : POST "/auth/register", parameters={}
+2026-05-10T22:02:30.386+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.internship.tool.controller.AuthController#register(RegisterRequest)
+2026-05-10T22:02:31.484+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [RegisterRequest(username=auditor01, email=demo@example.com, password=Password!123)]
+2026-05-10T22:02:37.121+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] org.hibernate.SQL                        : select u1_0.id from users u1_0 where u1_0.username=? fetch first ? rows only
+Hibernate: select u1_0.id from users u1_0 where u1_0.username=? fetch first ? rows only
+2026-05-10T22:02:41.818+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Using @ExceptionHandler com.internship.tool.controller.GlobalExceptionHandler#handleRuntime(RuntimeException)
+2026-05-10T22:02:42.306+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-05-10T22:02:42.330+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{error=Bad Request, message=Username already exists, timestamp=2026-05-10T22:02:42.082058500, status (truncated)...]
+2026-05-10T22:02:42.625+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [java.lang.RuntimeException: Username already exists]
+2026-05-10T22:02:42.649+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-7] o.s.web.servlet.DispatcherServlet        : Completed 400 BAD_REQUEST
+2026-05-10T22:03:14.075+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : POST "/auth/login", parameters={}
+2026-05-10T22:03:15.194+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-1] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.internship.tool.controller.AuthController#login(LoginRequest)
+2026-05-10T22:03:15.634+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-1] m.m.a.RequestResponseBodyMethodProcessor : Read "application/json;charset=UTF-8" to [LoginRequest(username=auditor01, password=Password!123)]
+2026-05-10T22:03:16.592+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-1] org.hibernate.SQL                        : select u1_0.id,u1_0.created_at,u1_0.email,u1_0.password,u1_0.role,u1_0.status,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.password,u1_0.role,u1_0.status,u1_0.updated_at,u1_0.username from users u1_0 where u1_0.username=?
+2026-05-10T22:03:23.420+05:30  INFO 14648 --- [tool] [nio-8081-exec-1] c.i.tool.service.impl.AuthServiceImpl    : User auditor01 logged in successfully
+2026-05-10T22:03:23.489+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-05-10T22:03:23.501+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-1] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [AuthResponse(token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhdWRpdG9yMDEiLCJyb2xlIjoiVklFV0VSIiwiaWF0IjoxNzc4 (truncated)...]
+2026-05-10T22:03:23.565+05:30 DEBUG 14648 --- [tool] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
